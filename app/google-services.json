@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "398791943826",
+    "project_id": "timetable-39b41",
+    "storage_bucket": "timetable-39b41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398791943826:android:b0c8154ff509b219c6a84b",
+        "android_client_info": {
+          "package_name": "com.cse.accessigexcel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398791943826-5k9t5lgrhlst9g25109to1fr400cn4kr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7VxWTTKlO0gmT49SVDLcD6wdKJp8m_ok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398791943826-5k9t5lgrhlst9g25109to1fr400cn4kr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
