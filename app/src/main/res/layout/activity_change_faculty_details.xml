@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ChangeFacultyDetails">
+
+
+
+    <ImageView
+
+        android:paddingLeft="20dp"
+        android:paddingRight="25dp"
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:src="@drawable/vignanlogohighres"
+        android:layout_marginTop="50sp"/>
+
+
+    <Button
+        android:layout_margin="40dp"
+        android:id="@+id/add_new_file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="upload faculty excel sheet" />
+
+
+    <Button
+        android:layout_margin="40dp"
+        android:id="@+id/details_dummy_object"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="update data after new time table" />
+
+    <TextView android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="1" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center"
+        android:textSize="12dp"
+        android:gravity="center"
+        android:fontFamily="casual"
+        android:textColor="@color/black"
+        android:layout_marginBottom="30dp"
+        android:text="\u00A9 2022 Dept. of CSE     |     All Rights Reserved"/>
+
+
+</LinearLayout>

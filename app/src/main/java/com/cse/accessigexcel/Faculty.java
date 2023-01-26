@@ -1,51 +1,53 @@
 package com.cse.accessigexcel;
 
 public class Faculty {
-    int periodno;
-    String Section_name="",subject_name="",room_id="",day="";
-    String faculty="";
+    int period;
+    String sectionId="",shortVal="",room="",day="";
+    String name="";
     String time="";
 
-    public Faculty(int periodno, String section_name, String subject_name, String room_id, String day, String faculty, String time) {
-        this.periodno = periodno;
-        Section_name = section_name;
-        this.subject_name = subject_name;
-        this.room_id = room_id;
+//    private String day,name,sectionId,shortVal,room,time;
+//    private long period;
+    public Faculty(int period, String sectionId, String shortVal, String room, String day, String name, String time) {
+        this.period = period;
+        this.sectionId = sectionId;
+        this.shortVal = shortVal;
+        this.room = room;
         this.day = day;
-        this.faculty = faculty;
+        this.name = name;
         this.time = time;
     }
 
-    public int getPeriodno() {
-        return periodno;
+    public int getPeriod() {
+        return period;
     }
 
-    public void setPeriodno(int periodno) {
-        this.periodno = periodno;
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
-    public String getSection_name() {
-        return Section_name;
+    public String getSectionId() {
+        return sectionId;
     }
 
-    public void setSection_name(String section_name) {
-        Section_name = section_name;
+    public void setSectionId(String sectionId) {
+        this.sectionId = sectionId;
     }
 
-    public String getSubject_name() {
-        return subject_name;
+    public String getShortVal() {
+        return shortVal;
     }
 
-    public void setSubject_name(String subject_name) {
-        this.subject_name = subject_name;
+    public void setShortVal(String shortVal) {
+        this.shortVal = shortVal;
     }
 
-    public String getRoom_id() {
-        return room_id;
+    public String getRoom() {
+        return room;
     }
 
-    public void setRoom_id(String room_id) {
-        this.room_id = room_id;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public String getDay() {
@@ -56,12 +58,12 @@ public class Faculty {
         this.day = day;
     }
 
-    public String getFaculty() {
-        return faculty;
+    public String getName() {
+        return name;
     }
 
-    public void setFaculty(String faculty) {
-        this.faculty = faculty;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTime() {
@@ -71,5 +73,4 @@ public class Faculty {
     public void setTime(String time) {
         this.time = time;
     }
-
 }

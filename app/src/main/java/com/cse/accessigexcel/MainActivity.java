@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     String extension="";
     Spinner YearSelection;
     String year="",siddhu="";
-    String[] timings = {"08:05-09:00","09:00-09:55","10:15-11:10","11:10-12:05","12:05-01:00","02:00-02:55","02:55-03:50","03:50-4:40","04:40-05:30"};
+    String[] timings = {"8:05-9:00","9:00-9:55","10:15-11:10","11:10-12:05","12:05-01:00","02:00-02:55","02:55-03:50","03:50-4:40","04:40-05:30"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -302,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         facultyDealings.put(key,names);
+                        //faclty name tho hashmap create cheyaliii
 
                     }
                     if(!rowIterator.hasNext()) {
@@ -320,7 +321,8 @@ public class MainActivity extends AppCompatActivity {
 
         FinalData details= new FinalData();
         PeriodDetails[] data;
-        if(!year.contains("CSE")) {
+
+        if(checkYearNotContainsCSE()) {
             year = year.substring(0,year.length())+" - ";
         }else {
             year = year.substring(0,year.lastIndexOf(" ")+1);
@@ -335,13 +337,16 @@ public class MainActivity extends AppCompatActivity {
                     //System.out.println(year+data[i].getSection_name()+"-->"+data[i].getPeriodno()+"-->"+data[i].getDay()+"-->"+data[i].getSubject_name()+"-->"+data[i].getRoom_id()+"-->"+data[i].getFaculty_names());
                     data[i].setSection_name(year + data[i].getSection_name());
                     data[i].setTime(timings[data[i].getPeriodno()-1]);
+
                     //student saving
                     /*if(data[i].getPeriodno()<8) {
+
                         if (data[i].getFaculty_names() != null) {
                             String name = data[i].getFaculty_names().get(0);
                             data[i].setFaculty(name);
                             StudentsDataSaving(data[i]);
                         } else {
+                            data[i].setFaculty("-");
                             StudentsDataSaving(data[i]);
                         }
                     }*/
@@ -369,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
                                 index += 1;
                             }
                         } else {
+                            data[i].setFaculty("-");
                             FacultiesDataSaving(data[i]);
                             prevperiodDetails = null;
 
@@ -379,6 +385,13 @@ public class MainActivity extends AppCompatActivity {
             System.out.println();
         }
 
+    }
+
+    private boolean checkYearNotContainsCSE() {
+        if (!year.contains("CSE"))
+            return  true;
+        else
+            return false;
     }
 
     public PeriodDetails prevperiodDetails=null;
@@ -394,12 +407,9 @@ public class MainActivity extends AppCompatActivity {
         * */
 
         System.out.println(details.getSection_name()+"-->"+details.getPeriodno()+"-->"+details.getDay()+"-->"+details.getSubject_name()+"-->"+details.getRoom_id()+"-->"+details.getFaculty());
-        DatabaseReference databaseReferenceforFaculty = FirebaseDatabase.getInstance().getReference("FacultyDetails");
-        DatabaseReference databaseReferenceforStudent = FirebaseDatabase.getInstance().getReference("StudentDetails");
+        DatabaseReference databaseReferenceforFaculty = FirebaseDatabase.getInstance().getReference("TimeTableData").child("FacultyDetails");
+        DatabaseReference databaseReferenceforStudent = FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails");
 
-        if(details.getFaculty() == null || details.getFaculty().equals("") || details.getFaculty().equals(" ")) {
-            details.setFaculty("None");
-        }
 
         /*
         * Here below if condition says that
@@ -409,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!details.getSubject_name().contains("***") && !details.getSubject_name().equals("Sat") ) {
 
-            databaseReferenceforStudent.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseReferenceforStudent.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -418,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!details.getFaculty().equalsIgnoreCase("None")) {
                         if (studentFromFirebase != null && !details.getSubject_name().contains("Sat") && !details.getSubject_name().equals("-")) {
 
-                            if (!studentFromFirebase.getSubject_name().equals(details.getSubject_name())) {
+                            if (!studentFromFirebase.getSub().equals(details.getSubject_name())) {
 
                                 /*
                                  * When old period data and new period data
@@ -426,10 +436,11 @@ public class MainActivity extends AppCompatActivity {
                                  *
                                  * */
 
-                                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("FacultyDetails");
+                                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("TimeTableData").child("FacultyDetails");
                                 String name = studentFromFirebase.getFaculty();
                                 name = name.replaceAll("[-+.^:, ]", "").toLowerCase(Locale.ROOT);
-                                Log.e("old data:" + studentFromFirebase.getSection_name() + ", " + studentFromFirebase.getPeriodno() + ", " + studentFromFirebase.getTime() + ", " + studentFromFirebase.getDay() + ", " + studentFromFirebase.getSubject_name() + ", ", studentFromFirebase.getRoom_id() + ", " + studentFromFirebase.getFaculty());
+
+                                Log.e("old data:" + studentFromFirebase.getSec() + ", " + studentFromFirebase.getPer() + ", " + studentFromFirebase.getTime() + ", " + studentFromFirebase.getDay() + ", " + studentFromFirebase.getSub() + ", ", studentFromFirebase.getRoom() + ", " + studentFromFirebase.getFaculty());
                                 Log.e("new data:" + details.getSection_name() + ", " + details.getPeriodno() + ", " + details.getTime() + ", " + details.getDay() + ", " + details.getSubject_name() + ", ", details.getRoom_id() + ", " + details.getFaculty());
 
 
@@ -440,11 +451,10 @@ public class MainActivity extends AppCompatActivity {
 
                                 databaseReference1.child(name).child(studentFromFirebase.getDay()).child(siddhu).child(studentFromFirebase.getTime()).removeValue().addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        DatabaseReference studentsaving = FirebaseDatabase.getInstance().getReference("StudentDetails");
+                                        DatabaseReference studentsaving = FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails");
                                         Student newstudent = new Student(details.getPeriodno(), details.getTime(), details.getSection_name(), details.getSubject_name(), details.getRoom_id(), details.getDay(), details.getFaculty());
-                                        studentsaving.child(year).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(newstudent).addOnCompleteListener(task14 -> {
+                                        studentsaving.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(newstudent).addOnCompleteListener(task14 -> {
                                             if (task14.isSuccessful()) {
-                                                secondFacultyRemoval();
                                                 Log.e("the above changes updated", "");
                                             }
                                         });
@@ -477,9 +487,9 @@ public class MainActivity extends AppCompatActivity {
 
                             String name = studentFromFirebase.getFaculty();
                             name = name.replaceAll("[-+.^:, ]", "").toLowerCase(Locale.ROOT);
-                            FirebaseDatabase.getInstance().getReference().child("FacultyDetails").child(name).child(studentFromFirebase.getDay()).child(siddhu).child(studentFromFirebase.getTime()).removeValue().addOnCompleteListener(task -> {
+                            FirebaseDatabase.getInstance().getReference("TimeTableData").child("FacultyDetails").child(name).child(studentFromFirebase.getDay()).child(siddhu).child(studentFromFirebase.getTime()).removeValue().addOnCompleteListener(task -> {
                                 Student newstudent = new Student(details.getPeriodno(), details.getTime(), details.getSection_name(), details.getSubject_name(), details.getRoom_id(), details.getDay(), details.getFaculty());
-                                FirebaseDatabase.getInstance().getReference().child("StudentDetails").child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(newstudent).addOnCompleteListener(task1 -> {
+                                FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails").child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(newstudent).addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         Log.e("data updated for periods", "when no faculty comes");
                                     }
@@ -492,8 +502,8 @@ public class MainActivity extends AppCompatActivity {
                              *
                              * */
 
-                            DatabaseReference facultySaving = FirebaseDatabase.getInstance().getReference("FacultyDetails");
-                            DatabaseReference studentsaving1 = FirebaseDatabase.getInstance().getReference("StudentDetails");
+                            DatabaseReference facultySaving = FirebaseDatabase.getInstance().getReference("TimeTableData").child("FacultyDetails");
+                            DatabaseReference studentsaving1 = FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails");
 
                             if (studentFromFirebase == null && details.getFaculty() != null) {
 
@@ -507,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
                                 Faculty facultyData = new Faculty(details.getPeriodno(), details.getSection_name(), details.getSubject_name(), details.getRoom_id(), details.getDay(), details.getFaculty(), details.getTime());
                                 String result = details.getFaculty().replaceAll("[-+.^:, ]", "").toLowerCase(Locale.ROOT);
                                 facultySaving.child(result).child(details.getDay()).child(siddhu).child(details.getTime()).setValue(facultyData).addOnCompleteListener(task -> {
-                                    studentsaving1.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(students).addOnCompleteListener(task12 -> Log.e("if period doesn't", " exist in database will save now"));
+                                    studentsaving1.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(students).addOnCompleteListener(task12 -> Log.e("if period doesn't", " exist in database will save now"));
                                 });
                             } else {
 
@@ -519,17 +529,13 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 Student studentDataWhenNoFaculty = new Student(details.getPeriodno(), details.getTime(), details.getSection_name(), details.getSubject_name(), details.getRoom_id(), details.getDay(), details.getFaculty());
-                                studentsaving1.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(studentDataWhenNoFaculty).addOnCompleteListener(task -> {
+                                studentsaving1.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(studentDataWhenNoFaculty).addOnCompleteListener(task -> {
                                     Log.e("no faculty for ", "this periods");
                                 });
                             }
                         }
                     }
                 }
-
-                private void secondFacultyRemoval() {
-                }
-
                 private void save() {
 
 
@@ -541,14 +547,14 @@ public class MainActivity extends AppCompatActivity {
                     *
                      */
 
-                    DatabaseReference studentsaving = FirebaseDatabase.getInstance().getReference("StudentDetails");
+                    DatabaseReference studentsaving = FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails");
                     Faculty facultyData = new Faculty(details.getPeriodno(),details.getSection_name(),details.getSubject_name(),details.getRoom_id(),details.getDay(),details.getFaculty(),details.getTime());
                     String name = details.getFaculty();
                     String result = name.replaceAll("[-+.^:,]", "");
 
                     databaseReferenceforFaculty.child(result).child(details.getDay()).child(siddhu).child(details.getTime()).setValue(facultyData).addOnCompleteListener(task13 ->{
                         if(task13.isSuccessful()) {
-                            if(details.getFaculty()!=null) {
+                            if(details.getFaculty()!="-") {
 
                                 /*
                                 * when faculty is present
@@ -566,7 +572,7 @@ public class MainActivity extends AppCompatActivity {
                                      */
 
                                     Student student = new Student(details.getPeriodno(),details.getTime(), details.getSection_name(),details.getSubject_name(), details.getRoom_id(),details.getDay(), details.getFaculty_names().get(0));
-                                    studentsaving.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(task -> {
+                                    studentsaving.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(task -> {
                                         Log.e("Lab data saved","saved");
                                     });
                                 }else {
@@ -580,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
                                      */
 
                                     Student student = new Student(details.getPeriodno(),details.getTime(), details.getSection_name(),details.getSubject_name(), details.getRoom_id(),details.getDay(), details.getFaculty());
-                                    studentsaving.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(task -> {
+                                    studentsaving.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(task -> {
                                         Log.e("Non Lab data saved","saved");
                                     });
                                 }
@@ -600,18 +606,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void StudentsDataSaving(PeriodDetails details) {
-        System.out.println(details.getSection_name()+"-->"+details.getPeriodno()+"-->"+details.getTime()+"-->"+details.getDay()+"-->"+details.getSubject_name()+"-->"+details.getRoom_id()+"-->"+details.getFaculty());
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("StudentDetails");
+    private void StudentsDataSaving(@NonNull PeriodDetails details) {
+        System.out.println(details.getSection_name()+" ==> "+details.getPeriodno()+" ==> "+details.getTime()+" ==> "+details.getDay()+" ==> "+details.getSubject_name()+" ==> "+details.getRoom_id()+" ==> "+details.getFaculty());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("TimeTableData").child("StudentDetails");
         Student student = new Student(details.getPeriodno(),details.getTime(),details.getSection_name(),details.getSubject_name(),details.getRoom_id(),details.getDay(),details.getFaculty());
-        databaseReference.child(siddhu).child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(new OnCompleteListener<Void>() {
+        /*databaseReference.child(details.getSection_name()).child(details.getDay()).child(details.getTime()).setValue(student).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
                     Log.e("data saved","for students");
                 }
             }
-        });
+        });*/
 
     }
 }

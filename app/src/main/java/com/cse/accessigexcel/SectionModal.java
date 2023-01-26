@@ -47,6 +47,7 @@ public class SectionModal {
     }
 
     void setDay(String day,ArrayList<String> dayTimeTable) {
+
         ArrayList<String> newperiod = new ArrayList<>();
         int i=1;
         while(i<dayTimeTable.size()) {
@@ -83,7 +84,7 @@ public class SectionModal {
         }else {
             for(String value : nonTeachingSubjects) {
                 if(room.trim().equals(value) || room.equals("")) {
-                    room = "-";
+                    room = "refer section";
                     flag= 1;
                     break;
                 }
